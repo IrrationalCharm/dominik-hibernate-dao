@@ -1,13 +1,14 @@
 package guru.springframework.jdbc.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
+@NamedQueries({
+        @NamedQuery(name = "find_book_by_title", query = "SELECT b FROM Book b where b.title = :title"),
+        @NamedQuery(name = "find_all", query = "FROM Book")
+})
 @Entity
 public class Book {
 
@@ -19,7 +20,7 @@ public class Book {
     private String isbn;
     private String publisher;
     private Long authorId;
-    private Author author;
+    //private Author author;
 
     public Book() {
 
@@ -86,11 +87,11 @@ public class Book {
         this.authorId = authorId;
     }
 
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
+//    public Author getAuthor() {
+//        return author;
+//    }
+//
+//    public void setAuthor(Author author) {
+//        this.author = author;
+//    }
 }
