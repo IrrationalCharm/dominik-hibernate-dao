@@ -19,6 +19,7 @@ public class Book {
     private String isbn;
     private String publisher;
     private Long authorId;
+    private Author author;
 
     public Book() {
 
@@ -83,5 +84,13 @@ public class Book {
 
     public void setAuthorId(Long authorId) {
         this.authorId = authorId;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 }
