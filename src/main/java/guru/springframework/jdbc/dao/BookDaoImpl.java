@@ -57,6 +57,7 @@ public class BookDaoImpl implements BookDao {
         try {
             TypedQuery<Book> query = em.createNamedQuery("find_all", Book.class);
             return query.getResultList();
+
         } finally {
             em.close();
         }
