@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -122,6 +124,40 @@ public class BookDaoImpl implements BookDao {
             Query query = em.createNativeQuery("SELECT * FROM book WHERE title = :title", Book.class);
             query.setParameter("title", title);
             return (Book) query.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
+
+    //This is using the paging method with Hibernate core
+    @Override
+    public List<Book> findAllBooksPaging(Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b", Book.class);
+            query.setFirstResult( Math.toIntExact(pageable.getOffset()) );
+            query.setMaxResults(pageable.getPageSize());
+
+            return query.getResultList();
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Book> findAllBooksSortByTitle(Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try {
+            String hql = "SELECT b FROM Book b ORDER BY b.title " +
+                    pageable.getSort().getOrderFor("title").getDirection().name();
+
+            TypedQuery<Book> query = em.createQuery(hql, Book.class);
+            query.setFirstResult( Math.toIntExact(pageable.getOffset()) );
+            query.setMaxResults(pageable.getPageSize());
+
+            return query.getResultList();
+
         } finally {
             em.close();
         }

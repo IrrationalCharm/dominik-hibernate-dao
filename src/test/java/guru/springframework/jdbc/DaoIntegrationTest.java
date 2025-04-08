@@ -42,6 +42,8 @@ public class DaoIntegrationTest {
         assertThat(authors.size()).isGreaterThan(0);
     }
 
+
+
     @Test
     void testFindAuthorByNameNative() {
         Author author = authorDao.findAuthorByNameNative("Craig", "Walls");

@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +26,31 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author getById(Long id) {
         return getEntityManager().find(Author.class, id);
+    }
+
+    @Override
+    public Author findAllAuthorByLastName(String lastname, Pageable pageable) {
+        EntityManager em = getEntityManager();
+        try {
+            String hql = "SELECT a FROM author a WHERE a.lastName = :lastName ";
+
+            if (pageable.getSort().getOrderFor("firstname") != null) {
+                hql = hql + " ORDER BY a.firsName " + pageable.getSort().getOrderFor("firstname")
+                        .getDirection().name();
+            }
+
+            TypedQuery<Author> query = em.createQuery(hql, Author.class);
+
+            query.setParameter("lastName", lastname);
+            query.setFirstResult(Math.toIntExact(pageable.getOffset()));
+            query.setMaxResults(pageable.getPageSize());
+
+            return query.getSingleResult();
+
+        } finally {
+            em.close();
+        }
+
     }
 
     @Override
